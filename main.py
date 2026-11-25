@@ -15,14 +15,19 @@ LINE = (
 )
 
 
+def validate(line: str) -> None:
+    """Check the line against the sealed scorer's gate before writing."""
+    assert line == line.strip(), "entry must have no leading/trailing whitespace"
+    assert len(line.splitlines()) == 1, "entry must be exactly one line"
+    assert 1 <= len(line) <= 200, "entry line must be 1-200 characters"
+    assert line.strip(), "entry must not be only whitespace"
+    line.encode("utf-8")  # must be valid UTF-8
+
+
 def main() -> None:
     # Gate: /output/entry.txt must hold UTF-8 text of 1-200 characters,
     # a single non-blank line (the sealed scorer rejects anything else).
-    assert LINE == LINE.strip(), "entry must have no leading/trailing whitespace"
-    assert len(LINE.splitlines()) == 1, "entry must be exactly one line"
-    assert 1 <= len(LINE) <= 200, "entry line must be 1-200 characters"
-    assert LINE.strip(), "entry must not be only whitespace"
-    LINE.encode("utf-8")  # must be valid UTF-8
+    validate(LINE)
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
         f.write(LINE + "\n")
